@@ -7,6 +7,7 @@ Holded challenge
   <li>In root directory run: <b>npm install</b></li>
   <li>Then run this to install pods: <b>cd iOS && pod install && cd ..</b></li>
   <li>Then: <b>react-native run-ios</b> or <b>react-native run-android</b></li>
+  <li>Before running on android, in the android folder, add a file called <b>local.properties</b> and inside add just one line with the url of your Android skd.dir like in my case it is: <b>sdk.dir = /Users/giuliogola/Library/Android/sdk<b></li>
 </ul>
 
 <h2>Notes</h2>
