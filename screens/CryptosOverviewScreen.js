@@ -57,14 +57,23 @@ const CryptosOverviewScreen = props => {
 
   // Check connectivity
   useEffect(() => {
-    // Use listeners for connection change events
-    const unsubscribe = NetInfo.addEventListener(state => {
-      loadData(state.isConnected).then(() => {
-        setIsLoading(false);
+    if (Platform.OS === 'android') {
+      NetInfo.fetch().then(state => {
+        console.log('android internet reachable?' + state.isInternetReachable);
+        loadData(state.isInternetReachable).then(() => {
+          setIsLoading(false);
+        });
       });
-    });
-    return () => {
-      unsubscribe();
+    } else {
+      const unsubscribe = NetInfo.addEventListener(state => {
+        console.log('ios internet reachable?' + state.isInternetReachable);
+        loadData(state.isInternetReachable).then(() => {
+          setIsLoading(false);
+        });
+      });
+      return () => {
+        unsubscribe();
+      }
     }
   }, [])
 
@@ -84,7 +93,7 @@ const CryptosOverviewScreen = props => {
   // Refresh
   const refreshHandler = () => {
       setIsRefreshing(true);
-      loadData(netInfo.isConnected).then(() => {
+      loadData(netInfo.isInternetReachable).then(() => {
         setIsRefreshing(false);
       });
   };
@@ -117,7 +126,7 @@ const CryptosOverviewScreen = props => {
             <View>
               <View style={styles.lastUpdatedContainer}>
                 <Text style={styles.lastUpdatedText}>Last updated on {formatDate(new Date(lastUpdated))}</Text>
-                <Text style={{...styles.infoText, color: netInfo.isConnected ? COLORS.ACCENT : 'red'}}>{netInfo.isConnected ? 'PULL TO REFRESH' : 'NO CONNECTION - SHOWING LATEST AVAILABLE DATA'}</Text>
+                <Text style={{...styles.infoText, color: netInfo.isInternetReachable ? COLORS.ACCENT : 'red'}}>{netInfo.isInternetReachable ? 'PULL TO REFRESH' : 'NO CONNECTION - SHOWING LATEST AVAILABLE DATA'}</Text>
               </View>
               <SwipeListView
                 onRefresh={refreshHandler}
