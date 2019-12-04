@@ -31,6 +31,7 @@ import * as cryptosActions from '../store/actions/cryptos';
 
 // Connectivity check
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import DeviceInfo from 'react-native-device-info';
 
 // Constants
 import COLORS from '../constants/Colors';
@@ -58,22 +59,34 @@ const CryptosOverviewScreen = props => {
   // Check connectivity
   useEffect(() => {
     if (Platform.OS === 'android') {
-      NetInfo.fetch().then(state => {
-        console.log('android internet reachable?' + state.isInternetReachable);
-        loadData(state.isInternetReachable).then(() => {
-          setIsLoading(false);
-        });
+      DeviceInfo.isEmulator().then(isEmulator => {
+        if (isEmulator) {
+          console.log('Running on Android emulator');
+          console.log('NetInfo not detecting state changes');
+        } else {
+          console.log('Running on Android real device');
+          console.log('NetInfo not tested in this case');
+        };
       });
     } else {
-      const unsubscribe = NetInfo.addEventListener(state => {
-        console.log('ios internet reachable?' + state.isInternetReachable);
-        loadData(state.isInternetReachable).then(() => {
-          setIsLoading(false);
-        });
+      DeviceInfo.isEmulator().then(isEmulator => {
+        if (isEmulator) {
+          console.log('Running on iOS simulator');
+          console.log('NetInfo detecting online to offline state changes but fails to detect offline to online state change');
+        } else {
+          console.log('Running on iOS real device');
+          console.log('NetInfo works');
+        };
       });
-      return () => {
-        unsubscribe();
-      }
+    }
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log('Connected?' + state.isConnected);
+      loadData(state.isConnected).then(() => {
+        setIsLoading(false);
+      });
+    });
+    return () => {
+      unsubscribe();
     }
   }, [])
 
@@ -93,7 +106,7 @@ const CryptosOverviewScreen = props => {
   // Refresh
   const refreshHandler = () => {
       setIsRefreshing(true);
-      loadData(netInfo.isInternetReachable).then(() => {
+      loadData(netInfo.isConnected).then(() => {
         setIsRefreshing(false);
       });
   };
@@ -126,7 +139,7 @@ const CryptosOverviewScreen = props => {
             <View>
               <View style={styles.lastUpdatedContainer}>
                 <Text style={styles.lastUpdatedText}>Last updated on {formatDate(new Date(lastUpdated))}</Text>
-                <Text style={{...styles.infoText, color: netInfo.isInternetReachable ? COLORS.ACCENT : 'red'}}>{netInfo.isInternetReachable ? 'PULL TO REFRESH' : 'NO CONNECTION - SHOWING LATEST AVAILABLE DATA'}</Text>
+                <Text style={{...styles.infoText, color: netInfo.isConnected ? COLORS.ACCENT : 'red'}}>{netInfo.isConnected ? 'PULL TO REFRESH' : 'NO CONNECTION - SHOWING LATEST AVAILABLE DATA'}</Text>
               </View>
               <SwipeListView
                 onRefresh={refreshHandler}

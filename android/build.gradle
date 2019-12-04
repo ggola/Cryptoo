@@ -2,6 +2,7 @@
 
 buildscript {
     ext {
+        firebaseIidVersion = "19.0.1"
         buildToolsVersion = "28.0.3"
         minSdkVersion = 16
         compileSdkVersion = 28
@@ -22,6 +23,7 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
         mavenLocal()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
