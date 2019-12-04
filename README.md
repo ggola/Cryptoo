@@ -41,7 +41,17 @@ Holded challenge
 </ul>
 
 <h2>Remarks</h2>
+Features work in all testing enviroments.</br>
+Regarding the connectivity check (online, offline), here is a summary of the tests.
 <ul>
-  <li>iOS: tested both on simulator and device (iPhone 6, iOS 12.4.3)</li>
-  <li>Android: tested on emulator Nexus 6 API 28, Android 9.0</li>
+  <li>iOS</li>
+  <ul>
+    <li>Simulator: NetInfo connectivity check detects state changes online to offline but fails to detect offline to online state change</li>
+    <li>Real device (iPhone 6, iOS 12.4.3): NetInfo works fine</li>
+  </ul>
+  <li>Android</li>
+  <ul>
+    <li>Emulator Nexus 6 API 28, Android 9.0: NetInfo connectivity check detects connectivity state but fails to detect changes</li>
+    <li>Real device: Not tested</li>
+  </ul>
 </ul>
